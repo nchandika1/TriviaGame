@@ -1,0 +1,34 @@
+body {
+	background-image: url("../images/trivia.jpg");
+ }
+
+h1 {
+	font-family: 'Architects Daughter', cursive;
+	font-weight: bolder;
+	text-align: center;
+	background-color: teal;
+	padding: 10px;
+}
+
+.big-box {
+	height: 500px;
+	width: 600px;
+	margin: auto;
+	margin-top: 20px;
+	text-align: center; 	   
+	position: relative;
+}
+
+.button-style {
+	padding: 10px 50px;
+	margin-top: 200px;
+}
+
+.start-over {
+	padding: 10px 50px;
+	margin-top: 20px;
+}
+
+.question-display {
+	margin-top: 50px;
+}
