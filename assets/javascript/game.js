@@ -19,8 +19,14 @@ var questionArray = [trivia1, trivia2];
 var rightCount = 0;
 var wrongCount = 0;
 var unAnsweredCount = 0;
+
 const timeoutSeconds = 5000 //30 seconds
-const timeoutAnswerStatus = 3000 //3 seconds
+const timeoutAnswerStatus = 5000 //3 seconds
+
+var triviaQuestionTimer;
+var displayScoreTimer;
+
+var timeRemaining = timeoutSeconds;
 
 function resetValues() {
 	triviaQuestion = 0;
@@ -36,7 +42,6 @@ function displayFinalScore() {
 	// Let us empty out the screen first
 	$("#trivia-display").empty();
 
-	$("#trivia-display").empty();	
 	$("#trivia-display").html("<div id=\"score-text\"></div>");
 	$("#score-text").html("<p> You final score is:</p>");
 	$("#score-text").append("<p> Correct Answers: " + rightCount + "</p>");
@@ -50,19 +55,9 @@ function displayFinalScore() {
 	});
 }
 
-function checkAnswer(event) {
-	// Check if the player's selection is the right answer
-
-	console.log("checkAnswer2: " + event.data.param1);
-	var correct_answer = questionArray[triviaQuestion].answer;
-	var choice = event.data.param1;
-	if (choice == correct_answer) {
-		rightCount++;
-		console.log("correct answer!");
-	} else {
-		wrongCount++;
-		console.log("wrong answer!");
-	}
+function displayAnswerTimeoutFunc() {
+	console.log("Clear display timer!");	
+	clearTimeout(displayScoreTimer);
 
 	triviaQuestion++;
 	if (triviaQuestion == questionArray.length) {
@@ -74,9 +69,45 @@ function checkAnswer(event) {
 	}
 }
 
-function timeoutAction() {
-	console.log("Time's Up!");
-	unAnsweredCount++;
+function displayTriviaResponse(answer) {
+
+	// Let us empty out the screen first
+	$("#trivia-display").empty();
+
+	if (answer) {
+		console.log("Display right answer details");
+		$("#trivia-display").html("<p><strong>Correct Answer!</strong></p");
+	} else {
+		console.log("Display wrong answer details");
+		$("#trivia-display").html("<p>Incorrect Answer!</p>");
+	}
+	//Display for 3s and either move to the 
+	console.log("Start display timer!");
+	displayScoreTimer = setTimeout(displayAnswerTimeoutFunc, timeoutAnswerStatus);
+}
+
+function checkAnswer(event) {
+	// Check if the player's selection is the right answer
+
+	// Clear Timer since the user selected an answer
+	console.log("Clear Timer!");
+	clearTimeout(triviaQuestionTimer);
+
+	console.log("checkAnswer: " + event.data.param1);
+	var correct_answer = questionArray[triviaQuestion].answer;
+	var choice = event.data.param1;
+	if (choice == correct_answer) {
+		rightCount++;
+		console.log("correct answer!");
+		displayTriviaResponse(true);
+
+	} else {
+		wrongCount++;
+		console.log("wrong answer!");
+		displayTriviaResponse(false);
+
+	}
+/*
 	triviaQuestion++;
 	if (triviaQuestion == questionArray.length) {
 		displayFinalScore();
@@ -85,6 +116,37 @@ function timeoutAction() {
 		getTriviaScreen();
 		console.log("Next question");
 	}
+	*/
+}
+
+function timeoutAction() {
+	// Unanswered question:  Timer is out and user didn't select any answer
+
+	console.log("Time's Up!");
+
+	// Clear Timer so we can start when the next trivia is displayed
+	clearTimeout(triviaQuestionTimer);
+
+	// Increment Unanswered count here
+	unAnsweredCount++;
+
+	// Move to the next question or display final score if no more trivias left
+	triviaQuestion++;
+
+	if (triviaQuestion == questionArray.length) {
+		displayFinalScore();
+		console.log("Game Over");
+	} else {
+		displayTriviaResponse(false);
+		getTriviaScreen();
+		console.log("Next question");
+	}
+
+}
+
+function timeRemaining() {
+	timeRemaining--;
+	$("#time-remaining").text(timeRemaining);
 }
 
 function getTriviaScreen() {
@@ -104,21 +166,24 @@ function getTriviaScreen() {
 	$("#option-btn").append("<p id=\"option3\">" + questionArray[triviaQuestion].option3 + "</p>");
 
 	// Set Timer now
-	setTimeout(timeoutAction, timeoutSeconds);
+	console.log("Start timer!");
+	triviaQuestionTimer = setTimeout(timeoutAction, timeoutSeconds);
+	
 	//Click Functions for the Options
 	console.log(questionArray[triviaQuestion].option1);
 	$("#option1").click({param1: questionArray[triviaQuestion].option1}, checkAnswer);
 	$("#option2").click({param1: questionArray[triviaQuestion].option2}, checkAnswer);
 	$("#option3").click({param1: questionArray[triviaQuestion].option3}, checkAnswer);
-
-
 }
 
 function startGame() {
-	getTriviaScreen();
+	// Start the game by displaying the welcome screen and a start button
+
 	console.log("startGame");
-	console.log(trivia1);
-	console.log(trivia2);
+	console.log(questionArray);
+
+	getTriviaScreen();
 }
 
+// Main function to start the game
 $("#start-button").click(startGame);
