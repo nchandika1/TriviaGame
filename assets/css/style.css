@@ -35,3 +35,8 @@ h1 {
 .question-display {
 	margin-top: 50px;
 }
+
+.image-style {
+	height: 200px;
+	width: 200px;
+}

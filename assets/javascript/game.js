@@ -1,22 +1,69 @@
 var trivia1 = {
-	question: "What is the baseball team from San Francisco?",
+	question: "Which baseball team is based in San Francisco?",
 	option1: "Giants",
 	option2: "Red Sox",
 	option3: "Dodgers",
-	answer: "Giants"
+	answer: "Giants",
+	image: "sf-giants-logo.png"
 }
 
 var trivia2 = {
-	question: "How many world series did Giants win since 2010?",
+	question: "Who won Finals MVP in the 2017 NBA Championship?",
+	option1: "Steph Curry",
+	option2: "Draymond Green",
+	option3: "Kevin Durant",
+	answer: "Kevin Durant",
+	image: "durant-kevin.jpg"
+}
+
+var trivia3 = {
+	question: "Who has the most women's tennis titles?",
+	option1: "Serena Williams",
+	option2: "Venus Williams",
+	option3: "Steffi Graf",
+	answer: "Serena Williams",
+	image: "serena-williams.jpg"
+}
+
+var trivia4 = {
+	question: "What sport did Michael Jordan play for a year while taking a break from the NBA?",
+	option1: "Football",
+	option2: "Baseball",
+	option3: "Golf",
+	answer: "Baseball",
+	image: "jordan-baseball.jpg"
+}
+
+var trivia5 = {
+	question: "Which NFL team has won the most Super Bowls?",
+	option1: "Pittsburgh Steelers",
+	option2: "Kansas City Chiefs",
+	option3: "New England Patriots",
+	answer: "Pittsburgh Steelers",
+	image: "steelers.jpg"
+}
+
+var trivia6 = {
+	question: "What is Kobe Bryant's middle name?",
+	option1: "Don",
+	option2: "Bean",
+	option3: "Wallace",
+	answer: "Bean",
+	image: "kobe-bryant.jpg"
+}
+
+var trivia7 = {
+	question: "How many world series have the Giants won since 2010?",
 	option1: "One",
 	option2: "Two",
 	option3: "Three",
-	answer: "Three"
+	answer: "Three",
+	image: "sf-giants-worldseries.jpg"
 }
 
 // Trivia Array and the Index into the array
 var triviaQuestion = 0;
-var questionArray = [trivia1, trivia2];
+var questionArray = [trivia1, trivia2, trivia3, trivia4, trivia5, trivia6, trivia7];
 
 // Counters for the score
 var rightCount = 0;
@@ -36,7 +83,7 @@ var unAnsweredCount = 0;
 const timeRemainingInSeconds = 15 //15 seconds
 // Constant to define the timer for result display...
 // before moving onto the next questions
-const answerWindowTimeout = 3000 //3 seconds
+const answerWindowTimeout = 2000 //3 seconds
 
 // Timer to store the result display timer
 var displayAnswerTimer;
@@ -61,6 +108,9 @@ function displayTimeRemaining() {
 		// Attach to the elemnt for display
 		$("#time-remaining").html(seconds);
 		seconds--;
+		if (seconds < 5) {
+			$("#time-remaining").attr("style", "color: red");
+		}
 		if (seconds < 0) {
 			clearInterval(timeRemainingTimer); // Disable Timer
 			unAnsweredCount++; // Update counter
@@ -113,17 +163,24 @@ function displayTriviaResponse(answer) {
 	// Let us empty out the screen first
 	$("#trivia-display").empty();
 
+	// Let us get the image associated with the question so we can display in the result windowt
+	var imageToDisplay = questionArray[triviaQuestion].image;
+	var srcString = "./assets/images/" + imageToDisplay;
+
 	switch (answer) {
 		case "correct":
 			$("#trivia-display").html("<p><strong>Correct Answer!</strong></p");
+			$("#trivia-display").append("<img class=\"image-style\" src=\"" + srcString + "\" >");
 			break;
 		case "incorrect":
 			$("#trivia-display").html("<p><strong>Incorrect Answer!</strong></p>");
 			$("#trivia-display").append("<p>Correct Answer is : " + questionArray[triviaQuestion].answer + "</p>");
+			$("#trivia-display").append("<img class=\"image-style\" src=\"" + srcString + "\" >");
 			break;
 		case "unanswered":
-			$("#trivia-display").html("<p></strong>Time's Up!</strong></p>");
+			$("#trivia-display").html("<p><strong>Time's Up!</strong></p>");
 			$("#trivia-display").append("<p>Correct Answer is : " + questionArray[triviaQuestion].answer + "</p>");
+			$("#trivia-display").append("<img class=\"image-style\" src=\"" + srcString + "\" >");
 			break;
 	}
 
